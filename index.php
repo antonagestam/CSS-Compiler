@@ -70,6 +70,8 @@
 				$this->compiled_code .= '{'.$rule.'}';
 			}
 			$this->compiled = true;
+			
+			return $this;
 		}
 		
 		public function retrieve()
@@ -86,10 +88,8 @@
 	try
 	{
 		header('Content-type:text/css');
-		$cc = new css_compiler();
-		$cc->init(file_get_contents('style.css'));
-		$cc->compile();
-		echo $cc->retrieve();
+		$cc = new css_compiler(file_get_contents('style.css'));
+		echo $cc->compile()->retrieve();
 	}
 	catch(Exception $e)
 	{
