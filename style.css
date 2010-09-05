@@ -1,0 +1,27 @@
+section
+{
+	background:#000000;
+	color:#ffffff;
+	font-size:32px;
+}
+
+body
+{
+	background:#000000;
+}
+
+div#myIdForADiv
+{
+	background:#000000;
+}
+
+a
+{
+	color:#ffffff;
+}
+
+.post
+{
+	border:1px solid white;
+	background:pink;
+}
