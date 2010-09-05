@@ -7,10 +7,15 @@
 		private $selectors = array();
 		private $compiled_code;
 		
-		public function __construct()
+		public function __construct($code=false)
 		{
 			$this->compiled = false;
 			$this->compiled_code = "";
+			
+			if($code !== false)
+			{
+				$this->init($code);
+			}
 		}
 		
 		public function init($code)
