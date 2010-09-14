@@ -1,0 +1,31 @@
+Array
+(
+    [background:#000000;] => Array
+        (
+            [0] => section
+            [1] => body
+            [2] => div#myIdForADiv
+        )
+
+    [color:#ffffff;] => Array
+        (
+            [0] => section
+            [1] => a
+        )
+
+    [font-size:32px;] => Array
+        (
+            [0] => section
+        )
+
+    [border:1px solid white;] => Array
+        (
+            [0] => .post
+        )
+
+    [background:pink;] => Array
+        (
+            [0] => .post
+        )
+
+)

@@ -1,0 +1,45 @@
+Array $singles
+(
+    [0] => fa6b6fcdee54ce7636f0f0f59079aa59
+    [1] => 4d9bb06c7a56863f00fc54d071cb9637
+    [2] => 0b46184d68d185e8f5639c7a59efd562
+)
+Array $selectors
+(
+    [section] => Array
+        (
+            [0] => 264651a4aaf7ad3956fabaa37c29de0d
+            [1] => 982ee64530783396c1dfca99dd6cdd9f
+            [2] => fa6b6fcdee54ce7636f0f0f59079aa59
+        )
+
+    [body] => Array
+        (
+            [0] => 264651a4aaf7ad3956fabaa37c29de0d
+        )
+
+    [div#myIdForADiv] => Array
+        (
+            [0] => 264651a4aaf7ad3956fabaa37c29de0d
+        )
+
+    [a] => Array
+        (
+            [0] => 982ee64530783396c1dfca99dd6cdd9f
+        )
+
+    [.post] => Array
+        (
+            [0] => 4d9bb06c7a56863f00fc54d071cb9637
+            [1] => 0b46184d68d185e8f5639c7a59efd562
+        )
+
+)
+Array $rules
+(
+    [264651a4aaf7ad3956fabaa37c29de0d] => background:#000000;
+    [982ee64530783396c1dfca99dd6cdd9f] => color:#ffffff;
+    [fa6b6fcdee54ce7636f0f0f59079aa59] => font-size:32px;
+    [4d9bb06c7a56863f00fc54d071cb9637] => border:1px solid white;
+    [0b46184d68d185e8f5639c7a59efd562] => background:pink;
+)

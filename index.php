@@ -1,16 +1,18 @@
 <?php
 	class css_compiler
 	{
+		private $uncompr_len = 0;
+		private $compr_len = 0;
 		private $code;
 		private $compiled;
 		private $rules = array();
 		private $selectors = array();
 		private $compiled_code;
-		private $singles = array();
+		private $parsed;
 		
 		public function __construct($code=false)
 		{
-			$this->compiled = false;
+			$this->compiled = $this->parsed = false;
 			$this->compiled_code = "";
 			
 			if($code !== false)
@@ -26,69 +28,69 @@
 				throw new Exception("Must pass string in \$code");
 			}
 			$this->code = $code;
+			$this->uncompr_len = strlen($this->code);
 			$this->compiled = false;
 		}
 		
-		private function find_selectors()
+		/*
+		 * Puts all the selectors and rules apart
+		 */
+		private function parse_code()
 		{
-			// get a list of all the selectors in the css code
-			preg_match_all('#([a-z|\#|\_|\.]+).*?{.*?}#si',$this->code,$matches);
-			// loop the array and save the values in arrays
-			foreach($matches[1] as $index => $selector)
+			$patterns = array(
+				'get_selectors' => '#([a-z|\#|\_|\.]+).*?{.*?}#si',
+				'get_rules' => '#([a-z|\-]+?):([a-z|0-9|\#|\-|(|)|,|%| ]+);#si',
+				'remove_selector' => '#([a-z|\#|\_|\.]+).*?{#si',
+			);
+			
+			// get all selectors
+			preg_match_all($patterns['get_selectors'],$this->code,$selectors);
+			
+			// turn css code into arrays
+			foreach($selectors[0] as $i => $code)
 			{
-				$this->selectors[$selector] = array();
-				$rules[$selector] = $matches[0][$index]; 
+				// remove some code
+				$selectors[0][$i] = preg_replace($patterns['remove_selector'],'',$code);
+				$selectors[0][$i] = str_replace('}','',$selectors[0][$i]);
+				
+				// turn code into arrays again
+				preg_match_all($patterns['get_rules'],$selectors[0][$i],$rules);
+				$selectors[0][$i] = $rules[0];
 			}
 			
-			// loop through the rules (contents) of each selector
-			foreach($rules as $index => $content)
+			foreach($selectors[0] as $id => $selector)
 			{
-				// remove selector and opening bracket
-				$content = preg_replace('#([a-z|\#|\_|\.]+).*?{#si','',$content);
-				// remove closing bracket
-				$content = str_replace('}','',$content);
-				
-				// find all rules TODO somewhere here support for aliasing (eg black goes #000000) should be added
-				preg_match_all('#([a-z|\-]+?):([a-z|0-9|\#|\-|(|)|,|%| ]+);#si',$content,$matches);
-				
-				// loop through the rules
-				foreach($matches[0] as $rule)
+				foreach($selector as $rule)
 				{
-					$this->rules[md5($rule)] = $rule;
-					$this->selectors[$index][] = md5($rule);
+					if(!isset($this->rules[$rule]))
+					{
+						$this->rules[$rule] = array();
+					}
+					
+					$this->rules[$rule][] = $selectors[1][$id];
 				}
 			}
 			
+			$this->parsed = true;
 			$this->clear_code();
 		}
 		
 		/*
-		 * Finds rules that only appear once
+		 * Makes cool stuff
 		 */
-		private function is_single($rule_key)
+		private function combine()
 		{
-			$app = 0;
-			foreach($this->selectors as $selector => $rules)
+			// implode selectors that share rules
+			foreach($this->rules as $rule => $selectors)
 			{
-				if(in_array($rule_key,$rules))
-				{
-					$app++;
-				}
-				
-				if($app == 2)
-				{
-					break;
-				}
+				$sel_name = implode($selectors,',');
+				$this->rules[$rule] = $sel_name;
 			}
 			
-			if($app > 1)
+			// flip array and combine singles
+			foreach($this->rules as $rule => $selector)
 			{
-				return false;
-			}
-			else
-			{
-				$this->singles[] = $rule_key;
-				return true;
+				$this->selectors[$selector][] = $rule;
 			}
 		}
 		
@@ -100,45 +102,28 @@
 			$this->code = "";
 		}
 		
+		/*
+		 * Glues all the selectors and rules back together again
+		 */
 		public function compile()
 		{
 			// parse the css code into something more sofisticated; arrays
-			$this->find_selectors();
-			// inititate an array for rules that only occure once
-			$singles = array();
-			// loop through the rules
-			foreach($this->rules as $index => $rule)
+			$this->parse_code();
+			$this->combine();
+			
+			foreach($this->selectors as $selector => $rules)
 			{
-				// find all singles
-				if($this->is_single($index))
-				{
-					continue;
-				}
-				foreach($this->selectors as $selector => $rules)
-				{
-					if(in_array($index,$rules))
-					{
-						$this->compiled_code .= $selector.',';
-					}
-				}
-				$this->compiled_code = rtrim($this->compiled_code,',');
-				$this->compiled_code .= '{'.$rule.'}'."\n";
+				$this->compiled_code .= $selector."{".implode($rules)."}";
 			}
 			
-			// loop through all the rules that only appear once and find out if it's selector has multiple singles and add them to the compiled code
-			foreach($this->singles as $i => $rule_id)
-			{
-				
-			}
-			
-			print_r($this->singles);
-			print_r($this->selectors);
-			print_r($this->rules);
 			$this->compiled = true;
-			
+			$this->compr_len = strlen($this->compiled_code);
 			return $this;
 		}
 		
+		/*
+		 * Returns your compiled code
+		 */
 		public function retrieve()
 		{
 			if(!$this->compiled)
@@ -148,6 +133,11 @@
 			
 			return $this->compiled_code;
 		}
+		
+		public function benchmark()
+		{
+			return "Turned $this->uncompr_len characters of code into $this->compr_len";
+		}
 	}
 	
 	try
@@ -155,6 +145,7 @@
 		header('Content-type:text/css');
 		$cc = new css_compiler(file_get_contents('style.css'));
 		echo $cc->compile()->retrieve();
+		echo $cc->benchmark();
 	}
 	catch(Exception $e)
 	{
