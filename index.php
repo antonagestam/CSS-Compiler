@@ -1,4 +1,10 @@
 <?php
+	/*
+	 * @author Anton Agestam
+	 * @copyright 2010
+	 * @project css_compiler
+	 * @version beta
+	 */
 	class css_compiler
 	{
 		private $uncompr_len = 0;
@@ -27,6 +33,7 @@
 			{
 				throw new Exception("Must pass string in \$code");
 			}
+			$this->clear_code();
 			$this->code = $code;
 			$this->uncompr_len = strlen($this->code);
 			$this->compiled = false;
@@ -145,7 +152,7 @@
 		header('Content-type:text/css');
 		$cc = new css_compiler(file_get_contents('style.css'));
 		echo $cc->compile()->retrieve();
-		echo $cc->benchmark();
+		echo "/*",$cc->benchmark(),"*/";
 	}
 	catch(Exception $e)
 	{
