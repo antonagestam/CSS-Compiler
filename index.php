@@ -3,7 +3,7 @@
 	 * @author Anton Agestam
 	 * @copyright 2010
 	 * @project css_compiler
-	 * @version beta
+	 * @version 1.0.0
 	 */
 	class css_compiler
 	{
@@ -45,7 +45,7 @@
 		private function parse_code()
 		{
 			$patterns = array(
-				'get_selectors' => '#([a-z|\#|\_|\.]+).*?{.*?}#si',
+				'get_selectors' => '#([a-z|\#|\_|\.|0-9]+).*?{.*?}#si',
 				'get_rules' => '#([a-z|\-]+?):([a-z|0-9|\#|\-|(|)|,|%| ]+);#si',
 				'remove_selector' => '#([a-z|\#|\_|\.]+).*?{#si',
 			);
