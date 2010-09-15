@@ -3,7 +3,7 @@
 	 * @author Anton Agestam
 	 * @copyright 2010
 	 * @project css_compiler
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
 	class css_compiler
 	{
@@ -75,6 +75,7 @@
 					}
 					
 					$this->rules[$rule][] = $selectors[1][$id];
+					$this->rules[$rule] = array_unique($this->rules[$rule]);
 				}
 			}
 			
