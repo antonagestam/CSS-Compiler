@@ -1,5 +1,13 @@
 <?php
-
+	
+	include_once "huffman.php";
+	$h = new huffman();
+	$h->input(array('a','b','c','d','e','f','g','h'),array());
+	$h->istring('abbacdefffh');
+	$h->calculate_weights();
+	
+	
+	exit;
 	try
 	{
 		header('Content-type:text/css');
