@@ -34,7 +34,7 @@
 				throw new Exception("Must pass string in \$code");
 			}
 			$this->clear_code();
-			$this->code = $code;
+			$this->code = $this->minify($code);
 			$this->uncompr_len = strlen($this->code);
 			$this->compiled = false;
 		}
@@ -140,6 +140,22 @@
 			}
 			
 			return $this->compiled_code;
+		}
+		
+		/*
+		 * remove spaces, tabs, newlines, comments etc
+		 */
+		private function minify($css)
+		{
+			$css = preg_replace( '#\s+#', ' ', $css );
+			$css = preg_replace( '#/\*.*?\*/#s', '', $css );
+			$css = str_replace( '; ', ';', $css );
+			$css = str_replace( ': ', ':', $css );
+			$css = str_replace( ' {', '{', $css );
+			$css = str_replace( '{ ', '{', $css );
+			$css = str_replace( ', ', ',', $css );
+			$css = str_replace( '} ', '}', $css );
+			return trim( $css );
 		}
 		
 		public function benchmark()
