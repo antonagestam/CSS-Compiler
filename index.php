@@ -2,8 +2,8 @@
 	
 	include_once "huffman.php";
 	$h = new huffman();
-	$h->input(array('a','b','c','d','e','f','g','h'),array());
-	$h->istring('abbacdefffh');
+	$h->input(array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','å','ä','ö',' '),array());
+	$h->istring('jag är en väldigt duktig kille från jordanien');
 	$h->calculate_weights();
 	
 	
