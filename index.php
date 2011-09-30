@@ -143,7 +143,7 @@
 		{
 			if(!$this->compiled)
 			{
-				throw new Exception('Compiler has not been executed');
+				throw new Exception('No code has been compiled');
 			}
 			
 			return $this->compiled_code;
