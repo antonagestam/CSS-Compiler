@@ -2,23 +2,26 @@
 	class css_compiler
 	{
 		private $code;
-		private $compiled;
+		private $compiled = false;
 		private $rules = array();
 		private $selectors = array();
-		private $compiled_code;
+		private $compiled_code = "";
 		private $singles = array();
 		
-		public function __construct($code=false)
+		/**
+		 * @param String $code
+		 */
+		public function __construct( $code = false )
 		{
-			$this->compiled = false;
-			$this->compiled_code = "";
-			
-			if($code !== false)
+			if( $code !== false )
 			{
-				$this->init($code);
+				$this->init( $code );
 			}
 		}
 		
+		/**
+		 * @param String $code - code to be compiled
+		 */
 		public function init($code)
 		{
 			if(empty($code))
@@ -32,7 +35,7 @@
 		private function find_selectors()
 		{
 			// get a list of all the selectors in the css code
-			preg_match_all('#([a-z|\#|\_|\.]+).*?{.*?}#si',$this->code,$matches);
+			preg_match_all('#([a-z|\#|\_|\.|\-]+).*?{.*?}#si',$this->code,$matches);
 			// loop the array and save the values in arrays
 			foreach($matches[1] as $index => $selector)
 			{
