@@ -94,6 +94,17 @@
 				return true;
 			}
 		}
+
+		/*
+		 * Get selectors from rule
+		 */
+		private function get_selectors_by_rule($rule_key){
+			$selectors = array();
+			foreach( $this->selectors as $selector => $rules )
+				if( in_array( $rule_key, $rules ) )
+					$selectors[] = $selector;
+			return $selectors;
+		}
 		
 		/*
 		 * Clears the code
@@ -107,36 +118,34 @@
 		{
 			// parse the css code into something more sofisticated; arrays
 			$this->find_selectors();
-			// inititate an array for rules that only occure once
-			$singles = array();
 			// loop through the rules
 			foreach($this->rules as $index => $rule)
 			{
-				// find all singles
+				// continue if single
 				if($this->is_single($index))
-				{
 					continue;
-				}
+
+				// loop through all selectors
 				foreach($this->selectors as $selector => $rules)
-				{
+					// check if the rule is in this selectors ruleset, and then add the selector to the code
 					if(in_array($index,$rules))
-					{
 						$this->compiled_code .= $selector.',';
-					}
-				}
+
+				// trim away the last added comma and add the rule to the new set of selectors
 				$this->compiled_code = rtrim($this->compiled_code,',');
 				$this->compiled_code .= '{'.$rule.'}'."\n";
 			}
+
+			var_dump($this->selectors);
+			exit;
 			
 			// loop through all the rules that only appear once and find out if it's selector has multiple singles and add them to the compiled code
-			foreach($this->singles as $i => $rule_id)
+			foreach( $this->singles as $i => $rule_id )
 			{
-				
+				var_dump( $this->rules[ $rule_id ] );
 			}
+			exit;
 			
-			print_r($this->singles);
-			print_r($this->selectors);
-			print_r($this->rules);
 			$this->compiled = true;
 			
 			return $this;
@@ -144,7 +153,7 @@
 		
 		public function retrieve()
 		{
-			if(!$this->compiled)
+			if( !$this->compiled )
 			{
 				throw new Exception('No code has been compiled');
 			}
@@ -156,7 +165,7 @@
 	try
 	{
 		header('Content-type:text/css');
-		$cc = new css_compiler(file_get_contents('style.css'));
+		$cc = new css_compiler( file_get_contents('style.css') );
 		echo $cc->compile()->retrieve();
 	}
 	catch(Exception $e)
